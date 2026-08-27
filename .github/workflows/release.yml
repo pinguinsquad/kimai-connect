@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: maven
+          server-id: github   # Server-ID aus distributionManagement in pom.xml
+          # setup-java trägt GITHUB_ACTOR/GITHUB_TOKEN als Zugangsdaten in settings.xml ein
+
+      - name: Version aus Tag ableiten und gegen pom.xml prüfen
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          POM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+          if [ "$POM_VERSION" != "$VERSION-SNAPSHOT" ]; then
+            echo "::error::Tag v$VERSION passt nicht zur pom.xml-Version $POM_VERSION (erwartet $VERSION-SNAPSHOT)"
+            exit 1
+          fi
+          mvn -B -q versions:set -DnewVersion="$VERSION" -DgenerateBackupPoms=false
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Build, Tests und Deploy nach GitHub Packages
+        run: mvn -B --no-transfer-progress deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: GitHub-Release anlegen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            --title "v$VERSION" \
+            --generate-notes \
+            "target/kimai-connect-$VERSION-exec.jar#kimai-connect-$VERSION-exec.jar (ausführbar)" \
+            "target/kimai-connect-$VERSION.jar#kimai-connect-$VERSION.jar (Bibliothek)"
