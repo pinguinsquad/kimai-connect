@@ -1,0 +1,10 @@
+# Build
+target/
+
+# IDE / OS
+.idea/
+*.iml
+.DS_Store
+
+# generierte Artefakte
+pdf/

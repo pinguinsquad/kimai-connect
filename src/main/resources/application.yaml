@@ -1,0 +1,28 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: off
+  ai:
+    mcp:
+      server:
+        # nur im mcp-Modus aktiv; Application.main schaltet enabled/stdio um
+        enabled: false
+        stdio: false
+        name: kimai-connect
+        version: "@project.version@"
+        instructions: "Zugriff auf Kimai-Timesheets: Einträge für einen Zeitraum abrufen (kimai_list_timesheets), User auflisten (kimai_list_users), PDF-Zeitnachweise erzeugen (kimai_generate_timesheet_pdfs)."
+
+# stdout gehört der CLI-Ausgabe bzw. dem MCP-Protokoll — Logs nur bei Problemen
+logging:
+  level:
+    root: warn
+
+kimai:
+  base-url: ${KIMAI_BASE_URL:}
+  token: ${KIMAI_API_TOKEN:}
+  page-size: 100
+
+# vom Maven-Build gefüllt (Resource-Filtering) — eine Quelle für CLI und MCP
+app:
+  name: kimai-connect
+  version: "@project.version@"

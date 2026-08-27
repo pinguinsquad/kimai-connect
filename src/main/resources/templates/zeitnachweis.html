@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="de" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="'Zeitnachweis für ' + ${projectName}">Zeitnachweis</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 24mm 18mm;
+            @bottom-center {
+                content: "Seite " counter(page) " von " counter(pages);
+                font-size: 9px;
+                color: #666;
+            }
+        }
+
+        body {
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 11px;
+            color: #111;
+        }
+
+        h1 {
+            font-size: 16px;
+            margin: 0 0 6mm 0;
+        }
+
+        h2 {
+            font-size: 13px;
+            margin: 0 0 4mm 0;
+            font-weight: bold;
+        }
+
+        .meta {
+            margin-bottom: 6mm;
+            color: #444;
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .detail-section {
+            page-break-before: always;
+        }
+
+        .summary-table {
+            margin: 2mm 0 6mm 0;
+        }
+
+        .header-table thead th,
+        .header-table tbody td {
+            border-bottom: none;
+        }
+
+        thead th {
+            text-align: left;
+            border-bottom: 1px solid #333;
+            padding: 2mm 1.5mm;
+        }
+
+        tbody td {
+            vertical-align: top;
+            border-bottom: 0.2mm solid #bbb;
+            padding: 2mm 1.5mm;
+        }
+
+        .col-day { width: 12%; }
+        .col-duration { width: 8%; }
+        .col-activity { width: 18%; }
+        .col-user { width: 15%; }
+        .col-desc { width: 47%; }
+        .col-summary-activity { width: 70%; }
+        .col-summary-duration { width: 30%; }
+    </style>
+</head>
+<body>
+
+<h1>Zeitnachweis</h1>
+
+<div class="meta">
+    Erstellt am <span th:text="${generatedAt}">31.01.2026</span>
+</div>
+
+<table class="header-table">
+    <thead>
+    <tr>
+        <th>Kunde</th>
+        <th>Projekt</th>
+        <th>Zeitraum</th>
+        <th>Summe in Stunden</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${customerName}">Kundenname</td>
+        <td th:text="${projectName}">Projekt</td>
+        <td th:text="${rangeBegin} + ' - ' + ${rangeEnd}">01.01.2026 - 31.01.2026</td>
+        <td th:text="${totalHours}">02:00</td>
+    </tr>
+    </tbody>
+</table>
+
+<br/>
+<br/>
+
+<h2>Zusammenfassung nach Tätigkeit</h2>
+<table class="summary-table">
+    <thead>
+    <tr>
+        <th class="col-summary-activity">Tätigkeit</th>
+        <th class="col-summary-duration">Summe in Stunden</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${activitySummary}">
+        <td class="col-summary-activity" th:text="${item.activity}">Tätigkeit</td>
+        <td class="col-summary-duration" th:text="${item.duration}">02:00</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="detail-section">
+    <h2>Tätigkeiten</h2>
+    <table>
+        <thead>
+        <tr>
+            <th class="col-day">Tag</th>
+            <th class="col-duration">Dauer in Stunden</th>
+            <th class="col-activity">Tätigkeit</th>
+            <th class="col-user">Mitarbeiter</th>
+            <th class="col-desc">Beschreibung</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${rows}">
+            <td class="col-day" th:text="${row.day}">01.01.2026</td>
+            <td class="col-duration" th:text="${row.duration}">02:00</td>
+            <td class="col-activity" th:text="${row.activity}">Tätigkeit</td>
+            <td class="col-user" th:text="${row.user}">User</td>
+            <td class="col-desc" th:text="${row.description}">Beschreibung</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
