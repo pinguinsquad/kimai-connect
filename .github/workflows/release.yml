@@ -2,19 +2,21 @@ name: Release
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
 
 permissions:
   contents: write
   packages: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 0   # vollständige Historie für die main-Prüfung
 
       - uses: actions/setup-java@v6
         with:
@@ -24,17 +26,15 @@ jobs:
           server-id: github   # Server-ID aus distributionManagement in pom.xml
           # setup-java trägt GITHUB_ACTOR/GITHUB_TOKEN als Zugangsdaten in settings.xml ein
 
-      - name: Tag gegen main und pom.xml prüfen
+      - name: Version aus pom.xml lesen und Tag prüfen
         id: version
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
-            echo "::error::Tag v$VERSION liegt nicht auf main – Releases werden nur von main gebaut"
-            exit 1
-          fi
-          POM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
-          if [ "$POM_VERSION" != "$VERSION" ]; then
-            echo "::error::Tag v$VERSION passt nicht zur pom.xml-Version $POM_VERSION (erwartet $VERSION, ohne -SNAPSHOT)"
+          VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+          case "$VERSION" in
+            *-SNAPSHOT) echo "::error::SNAPSHOT-Versionen sind auf main nicht erlaubt ($VERSION)"; exit 1 ;;
+          esac
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" >/dev/null; then
+            echo "::error::Tag v$VERSION existiert bereits – Version in pom.xml muss erhöht werden"
             exit 1
           fi
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
@@ -43,6 +43,15 @@ jobs:
         run: mvn -B --no-transfer-progress deploy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Tag setzen
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" -m "v$VERSION"
+          git push origin "v$VERSION"
 
       - name: GitHub-Release anlegen
         env:

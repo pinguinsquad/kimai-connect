@@ -1,47 +1,43 @@
 # Release
 
-## Branches
+## Modell
 
-- `develop`: Integrationsbranch und Default-Branch. Trägt immer eine `-SNAPSHOT`-Version
-  (die nächste geplante Version). Feature-Branches zweigen hier ab und werden per PR
-  hierher gemergt.
-- `main`: enthält ausschließlich Release-Stände. Jeder Commit auf `main` ist ein Release mit
-  fester Version in `pom.xml` und Tag `vX.Y.Z`. Es wird nie direkt auf `main` gearbeitet.
+- Es gibt nur den Branch `main`. Jeder Commit auf `main` ist ein Release.
+- Arbeit passiert auf Feature-Branches; ein PR gegen `main` hebt die Version in `pom.xml`
+  selbst und pflegt den CHANGELOG-Abschnitt. Es gibt keine `-SNAPSHOT`-Versionen.
+- Die Pipeline (`release.yml`) läuft bei jedem Push auf `main`: sie liest die Version aus
+  `pom.xml`, legt den Tag `vX.Y.Z` an, deployt nach GitHub Packages und erzeugt das
+  GitHub-Release. Existiert der Tag schon, bricht sie ab – die Version muss also in jedem
+  PR erhöht werden.
 
 ## Regeln
 
-- [SemVer](https://semver.org/lang/de/): `MAJOR.MINOR.PATCH`.
-- Ein Release ist ein Git-Tag `vX.Y.Z` auf `main`. Die Pipeline (`release.yml`) prüft, dass der
-  Tag auf `main` liegt und zur Version in `pom.xml` passt, deployt nach GitHub Packages und
-  erzeugt das GitHub-Release. Die Pipeline committet nichts.
+- [SemVer](https://semver.org/lang/de/): `MAJOR.MINOR.PATCH`. Neue Funktion → Minor,
+  Fehlerbehebung oder Dependency-Update → Patch, inkompatible Änderung → Major.
+- Zwei offene PRs, die dieselbe Version beanspruchen: wer zweiter mergt, rebased und hebt
+  auf die nächste Version.
 
-## Ablauf
+## Ablauf pro PR
 
-1. Release-Branch von `develop` abzweigen, z. B. `release/0.1.0`:
-   - `pom.xml`: Version von `0.1.0-SNAPSHOT` auf `0.1.0`, `project.build.outputTimestamp`
-     auf das Release-Datum.
-   - `CHANGELOG.md`: Abschnitt „Unreleased“ in `## [0.1.0] – JJJJ-MM-TT` umbenennen, neuen
-     leeren „Unreleased“-Abschnitt anlegen, Vergleichslinks anpassen.
-2. PR `release/0.1.0` → `main` öffnen; Review und grüne CI, dann mergen (Merge-Commit, kein
-   Squash, damit die Historie von `develop` auf `main` erhalten bleibt).
-3. Tag auf `main` setzen und pushen:
-   ```bash
-   git checkout main && git pull
-   git tag -a v0.1.0 -m "v0.1.0"
-   git push origin v0.1.0
-   ```
-4. Pipeline unter *Actions → Release* beobachten. Ergebnis:
+1. Feature-Branch von `main` abzweigen, Änderung umsetzen, Tests ergänzen.
+2. `pom.xml`: `<version>` auf die neue Version, `project.build.outputTimestamp` auf das
+   aktuelle Datum.
+3. `CHANGELOG.md`: neuen Abschnitt `## [X.Y.Z] – JJJJ-MM-TT` mit den Änderungen anlegen und
+   den Vergleichslink am Dateiende ergänzen.
+4. PR gegen `main`; Review und grüne CI, dann mergen.
+5. Pipeline unter *Actions → Release* beobachten. Ergebnis:
+   - Tag `vX.Y.Z` auf dem Merge-Commit
    - Maven-Artefakte `de.p10d:kimai-connect:X.Y.Z` (Jar, Sources, Javadoc, POM) in
      [GitHub Packages](https://github.com/pinguinsquad/kimai-connect/packages)
    - GitHub-Release `vX.Y.Z` mit generierten Release-Notes und `kimai-connect-X.Y.Z-exec.jar`
-5. `main` zurück nach `develop` mergen (PR `main` → `develop`) und dort `pom.xml` auf die
-   nächste Version heben, z. B. `0.2.0-SNAPSHOT`.
 
-Die Pipeline bricht ab, wenn der Tag nicht exakt der Version in `pom.xml` entspricht
-(Tag `v0.2.0` erfordert `0.2.0`) oder der getaggte Commit nicht auf `main` liegt.
+## Dependabot
+
+Dependabot läuft monatlich und bündelt Updates in Gruppen. Dependabot erhöht die Version in
+`pom.xml` nicht selbst – vor dem Merge eines Dependabot-PRs die Patch-Version und den CHANGELOG
+im PR nachziehen (Branch auschecken, Commit dazu, pushen).
 
 ## Korrektur eines fehlerhaften Releases
 
 Veröffentlichte Versionen werden nicht überschrieben. Fehler werden mit einem neuen
-Patch-Release behoben: Branch `hotfix/X.Y.Z+1` von `main`, Fix, PR → `main`, Tag, danach
-`main` → `develop` mergen.
+Patch-Release behoben – also ganz normal per PR gegen `main`.
