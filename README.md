@@ -103,8 +103,28 @@ claude mcp add kimai \
   java -jar /pfad/zu/kimai-connect-<version>-exec.jar mcp
 ```
 
-Mit 1Password: `--env KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>"` und vor `java` ein
-`op run --no-masking --` einfügen.
+Andere MCP-Clients (Claude Desktop, LM Studio, Cursor, …) lesen eine `mcp.json`; der Server
+braucht nur die beiden Umgebungsvariablen, kein weiteres Tooling:
+
+```json
+{
+  "mcpServers": {
+    "kimai": {
+      "command": "java",
+      "args": ["-jar", "/pfad/zu/kimai-connect-<version>-exec.jar", "mcp"],
+      "env": {
+        "KIMAI_BASE_URL": "https://kimai.example.org/api",
+        "KIMAI_API_TOKEN": "<token>"
+      }
+    }
+  }
+}
+```
+
+Wer das Token nicht in die Client-Konfiguration schreiben will, kann einen Secret-Manager
+vorschalten, z. B. 1Password: `"command": "op"`, `"args": ["run", "--no-masking", "--",
+"java", "-jar", "…", "mcp"]` und `"KIMAI_API_TOKEN": "op://<Tresor>/<Eintrag>/<Feld>"`.
+Manche Clients haben keinen Shell-`PATH` – dann `java` und `op` mit absolutem Pfad angeben.
 
 ## Als Bibliothek einbinden
 
