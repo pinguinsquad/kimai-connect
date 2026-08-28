@@ -5,9 +5,9 @@ Danke für dein Interesse! Beiträge laufen über Issues und Pull Requests.
 ## Ablauf
 
 1. Issue anlegen oder ein bestehendes kommentieren, bevor größere Änderungen entstehen.
-2. Branch von `main` abzweigen, Änderung umsetzen, Tests ergänzen.
+2. Branch von `develop` abzweigen, Änderung umsetzen, Tests ergänzen.
 3. `mvn verify` muss lokal grün sein – die CI prüft dasselbe.
-4. Pull Request gegen `main`; ein Review und grüne CI sind Voraussetzung fürs Mergen.
+4. Pull Request gegen `develop`; ein Review und grüne CI sind Voraussetzung fürs Mergen.
 
 ## Konventionen
 

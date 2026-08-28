@@ -12,4 +12,4 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
 
-[Unreleased]: https://github.com/pinguinsquad/kimai-connect/commits/main
+[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/main...develop
