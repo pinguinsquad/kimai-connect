@@ -5,8 +5,8 @@
 
 Anbindung an die Zeiterfassung [Kimai](https://www.kimai.org/) als Spring-Boot-Anwendung
 (Java 25): Timesheets abrufen, PDF-Zeitnachweise erzeugen und dieselben Funktionen als
-[MCP](https://modelcontextprotocol.io/)-Server für KI-Clients (z. B. Claude Code) bereitstellen.
-Das Jar ist zugleich als Bibliothek nutzbar – so baut
+[MCP](https://modelcontextprotocol.io/)-Server für KI-Clients bereitstellen. Das Jar ist
+zugleich als Bibliothek nutzbar – so baut
 [kimai2lexware-v2](https://github.com/pinguinsquad/dies-und-das/tree/main/kimai2lexware-v2)
 darauf Rechnungsentwürfe für Lexware.
 
@@ -25,34 +25,27 @@ Alle Funktionen sind **lesend** gegenüber Kimai; geschrieben wird nur lokal (PD
 
 ## Voraussetzungen
 
-- Java 25 und Maven 3.9 (im Repo per [asdf](https://asdf-vm.com/) über `.tool-versions`)
+- Java 25 zur Laufzeit; zum Bauen zusätzlich Maven 3.9 (im Repo per [asdf](https://asdf-vm.com/)
+  über `.tool-versions`)
 - Ein Kimai-API-Token (Kimai → Benutzer → API-Zugriff)
 
 ## Konfiguration
+
+Die Anwendung wird ausschließlich über zwei Umgebungsvariablen konfiguriert:
 
 | Variable | Bedeutung |
 |---|---|
 | `KIMAI_BASE_URL` | Pflicht. Basis-URL der Kimai-API, z. B. `https://kimai.example.org/api` |
 | `KIMAI_API_TOKEN` | Pflicht. API-Token des Kimai-Users |
 
-Beide Werte werden als Umgebungsvariablen gelesen – wie sie dorthin kommen, entscheidet der
-Anwender. Direkt beim Aufruf:
+Wie das Token in die Umgebung gelangt, bleibt dem Anwender überlassen – direkt beim Aufruf,
+per `export`, aus einem Secret-Manager. Mit der
+[1Password CLI](https://developer.1password.com/docs/cli/) etwa als `op://`-Referenz, die
+`op run` beim Start auflöst:
 
 ```bash
-KIMAI_BASE_URL=https://kimai.example.org/api KIMAI_API_TOKEN=<token> java -jar kimai-connect-<version>-exec.jar list ...
+KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>" op run --no-masking -- java -jar kimai-connect-<version>-exec.jar …
 ```
-
-Damit das Token nicht in Shell-Historie oder Dateien landet, bietet sich ein Secret-Manager
-an. Mit der [1Password CLI](https://developer.1password.com/docs/cli/) etwa als
-`op://`-Referenz plus `op run`:
-
-```bash
-export KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>"
-op run --no-masking -- java -jar kimai-connect-<version>-exec.jar list ...
-```
-
-Die Beispiele unten verwenden ein `kimai`-Alias, damit sie unabhängig von der gewählten
-Variante lesbar bleiben.
 
 ## Build
 
@@ -65,9 +58,11 @@ Erzeugt `target/kimai-connect-<version>.jar` (Bibliothek) und
 
 ## Verwendung
 
+Die Beispiele setzen die Variablen einmal und kürzen den Aufruf mit einem Alias ab:
+
 ```bash
 export KIMAI_BASE_URL=https://kimai.example.org/api
-export KIMAI_API_TOKEN=<token>            # oder eine op://-Referenz, dann mit „op run --no-masking --“ davor
+export KIMAI_API_TOKEN=<token>
 alias kimai='java -jar target/kimai-connect-<version>-exec.jar'
 ```
 
@@ -94,7 +89,9 @@ per `--template` durch eine eigene Datei ersetzt werden.
 ### MCP-Server
 
 `kimai mcp` startet den Server über stdio; stdout gehört dem Protokoll, Logs gehen auf stderr.
-Einbindung in Claude Code:
+Der Server braucht nur die beiden Umgebungsvariablen, kein weiteres Tooling.
+
+Claude Code:
 
 ```bash
 claude mcp add kimai \
@@ -103,8 +100,7 @@ claude mcp add kimai \
   java -jar /pfad/zu/kimai-connect-<version>-exec.jar mcp
 ```
 
-Andere MCP-Clients (Claude Desktop, LM Studio, Cursor, …) lesen eine `mcp.json`; der Server
-braucht nur die beiden Umgebungsvariablen, kein weiteres Tooling:
+Clients mit `mcp.json` (Claude Desktop, LM Studio, Cursor, …):
 
 ```json
 {
@@ -121,15 +117,15 @@ braucht nur die beiden Umgebungsvariablen, kein weiteres Tooling:
 }
 ```
 
-Wer das Token nicht in die Client-Konfiguration schreiben will, kann einen Secret-Manager
-vorschalten, z. B. 1Password: `"command": "op"`, `"args": ["run", "--no-masking", "--",
-"java", "-jar", "…", "mcp"]` und `"KIMAI_API_TOKEN": "op://<Tresor>/<Eintrag>/<Feld>"`.
-Manche Clients haben keinen Shell-`PATH` – dann `java` und `op` mit absolutem Pfad angeben.
+Soll das Token nicht in der Client-Konfiguration stehen, lässt sich ein Secret-Manager
+vorschalten – mit 1Password: `"command": "op"`, `"args": ["run", "--no-masking", "--", "java",
+"-jar", "…", "mcp"]` und `"KIMAI_API_TOKEN": "op://<Tresor>/<Eintrag>/<Feld>"`. Viele Clients
+starten ohne Shell-`PATH`; `java` und `op` dann mit absolutem Pfad angeben.
 
 ## Als Bibliothek einbinden
 
-Releases werden nach GitHub Packages veröffentlicht. In `~/.m2/settings.xml` ist dafür ein
-GitHub-Token mit `read:packages` nötig:
+Releases liegen in GitHub Packages. In `~/.m2/settings.xml` ist dafür ein GitHub-Token mit
+`read:packages` nötig:
 
 ```xml
 <servers>

@@ -21,16 +21,17 @@ mvn test -Dtest=KimaiClientTest#paginiertBisAlleEintraegeGeladenSind  # eine Tes
 Ergebnis: `target/kimai-connect-<version>.jar` (Bibliothek) und `…-exec.jar` (lauffähig,
 Spring-Boot-Classifier `exec`).
 
-Lokal ausführen – Konfiguration ausschließlich über die Umgebungsvariablen `KIMAI_BASE_URL`
-und `KIMAI_API_TOKEN`; wie das Token bereitgestellt wird, ist Sache des Anwenders (plain
-Env-Var muss immer funktionieren, 1Password-CLI via `op run` ist nur eine Option):
+Konfiguration ausschließlich über die Umgebungsvariablen `KIMAI_BASE_URL` und `KIMAI_API_TOKEN`.
+Wie das Token bereitgestellt wird, entscheidet der Anwender – der Aufruf mit plain Env-Var muss
+immer funktionieren, auch in MCP-Client-Konfigurationen; die 1Password-CLI (`op run`) ist nur
+eine Option und darf in Doku und Beispielen nicht als Voraussetzung erscheinen.
 
 ```bash
 KIMAI_BASE_URL=https://kimai.example.org/api KIMAI_API_TOKEN=<token> java -jar target/kimai-connect-<version>-exec.jar list --start 2026-08-01 --end 2026-08-31
 ```
 
-In diesem Projekt liegt das Token in 1Password (`op run --no-masking -- java …` mit
-`KIMAI_API_TOKEN="op://Hosting/Kimai Projekt/API Token"`, Test-Instanz `https://tr.p10d.de/api`).
+Test-Instanz in diesem Projekt: `https://tr.p10d.de/api`, Token in 1Password unter
+`op://Hosting/Kimai Projekt/API Token` (Aufruf dann mit `op run --no-masking -- java …`).
 
 ## Release-Modell
 
