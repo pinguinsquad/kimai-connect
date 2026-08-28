@@ -35,9 +35,24 @@ Alle Funktionen sind **lesend** gegenüber Kimai; geschrieben wird nur lokal (PD
 | `KIMAI_BASE_URL` | Pflicht. Basis-URL der Kimai-API, z. B. `https://kimai.example.org/api` |
 | `KIMAI_API_TOKEN` | Pflicht. API-Token des Kimai-Users |
 
-Tokens gehören nicht in Shell-Historie oder Dateien. Bewährt hat sich die
-[1Password CLI](https://developer.1password.com/docs/cli/): Variablen als `op://`-Referenz
-setzen und das Programm mit `op run` starten – die Beispiele unten nutzen dieses Muster.
+Beide Werte werden als Umgebungsvariablen gelesen – wie sie dorthin kommen, entscheidet der
+Anwender. Direkt beim Aufruf:
+
+```bash
+KIMAI_BASE_URL=https://kimai.example.org/api KIMAI_API_TOKEN=<token> java -jar kimai-connect-<version>-exec.jar list ...
+```
+
+Damit das Token nicht in Shell-Historie oder Dateien landet, bietet sich ein Secret-Manager
+an. Mit der [1Password CLI](https://developer.1password.com/docs/cli/) etwa als
+`op://`-Referenz plus `op run`:
+
+```bash
+export KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>"
+op run --no-masking -- java -jar kimai-connect-<version>-exec.jar list ...
+```
+
+Die Beispiele unten verwenden ein `kimai`-Alias, damit sie unabhängig von der gewählten
+Variante lesbar bleiben.
 
 ## Build
 
@@ -52,8 +67,8 @@ Erzeugt `target/kimai-connect-<version>.jar` (Bibliothek) und
 
 ```bash
 export KIMAI_BASE_URL=https://kimai.example.org/api
-export KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>"
-alias kimai='op run --no-masking -- java -jar target/kimai-connect-0.1.0-SNAPSHOT-exec.jar'
+export KIMAI_API_TOKEN=<token>            # oder eine op://-Referenz, dann mit „op run --no-masking --“ davor
+alias kimai='java -jar target/kimai-connect-<version>-exec.jar'
 ```
 
 ### Einträge auflisten
@@ -84,9 +99,12 @@ Einbindung in Claude Code:
 ```bash
 claude mcp add kimai \
   --env KIMAI_BASE_URL=https://kimai.example.org/api \
-  --env KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>" -- \
-  op run --no-masking -- java -jar /pfad/zu/kimai-connect-0.1.0-exec.jar mcp
+  --env KIMAI_API_TOKEN=<token> -- \
+  java -jar /pfad/zu/kimai-connect-<version>-exec.jar mcp
 ```
+
+Mit 1Password: `--env KIMAI_API_TOKEN="op://<Tresor>/<Eintrag>/<Feld>"` und vor `java` ein
+`op run --no-masking --` einfügen.
 
 ## Als Bibliothek einbinden
 
