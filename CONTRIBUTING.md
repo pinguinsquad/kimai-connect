@@ -7,8 +7,8 @@ Danke für dein Interesse! Beiträge laufen über Issues und Pull Requests.
 1. Issue anlegen oder ein bestehendes kommentieren, bevor größere Änderungen entstehen.
 2. Branch von `main` abzweigen, Änderung umsetzen, Tests ergänzen.
 3. `mvn verify` muss lokal grün sein – die CI prüft dasselbe.
-4. Version in `pom.xml` erhöhen und CHANGELOG-Abschnitt anlegen – jeder Merge auf `main` ist ein
-   Release (siehe [RELEASING.md](RELEASING.md)).
+4. Version in `pom.xml` erhöhen und CHANGELOG-Abschnitt anlegen, denn jeder Merge auf `main`
+   ist ein Release – Details in [RELEASING.md](RELEASING.md).
 5. Pull Request gegen `main`; ein Review und grüne CI sind Voraussetzung fürs Mergen.
 
 ## Konventionen
@@ -21,7 +21,3 @@ Danke für dein Interesse! Beiträge laufen über Issues und Pull Requests.
   Beitrag erklärst du dich einverstanden, dass er unter der [Apache License 2.0](LICENSE)
   veröffentlicht wird.
 - **Werkzeuge:** Java 25 und Maven per `.tool-versions` (asdf).
-
-## Release
-
-Siehe [RELEASING.md](RELEASING.md).
