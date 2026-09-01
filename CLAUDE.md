@@ -52,17 +52,26 @@ andere Projekte (etwa eine Rechnungserstellung aus Kimai-Zeiten); öffentliche K
 Pakete unter `de.p10d.kimai`:
 
 - `core` – fachliches Modell (Records `TimesheetQuery`, `TimesheetEntry`, `TimesheetReport`,
-  `UserInfo`), `TimesheetService` als Einstiegspunkt und die vom Kern definierten Ports
-  `TimesheetSource` / `UserSource`. Keine Abhängigkeit zu Kimai oder Spring-Web.
-- `client` – Kimai-REST-Adapter: `KimaiClient` implementiert beide Ports (RestClient,
-  paginiert mit `kimai.page-size`), `KimaiProperties` bindet `KIMAI_BASE_URL`/`KIMAI_API_TOKEN`,
-  `KimaiException` für Fehler mit deutscher Meldung. Alles nur lesend.
-- `cli` – picocli-Kommandos `list`, `pdf`, `mcp` unter `RootCommand`; `TimesheetQueryMixin`
-  teilt die Optionen `--start/--end/--user/--all`; `TextRenderer`/`JsonRenderer` erzeugen die
-  Ausgabe. Exit-Codes: 0 ok, 1 Laufzeitfehler, 2 Bedienfehler.
+  `UserInfo`, `ProjectInfo`, `ActivityInfo`, `TimesheetDraft`, `NewTimesheet`,
+  `CreatedTimesheet`), `TimesheetService` (Lesen) und `TimeTrackingService` (Erfassen:
+  Projekt/Tätigkeit per Name oder ID auflösen, Eintrag anlegen) als Einstiegspunkte sowie die
+  vom Kern definierten Ports `TimesheetSource`, `UserSource`, `ProjectSource`,
+  `ActivitySource`, `TimesheetWriter`. `DurationParser` liest `3h30m`/`1:30`. Keine
+  Abhängigkeit zu Kimai oder Spring-Web.
+- `client` – Kimai-REST-Adapter: `KimaiClient` implementiert alle Ports (RestClient,
+  Timesheets paginiert mit `kimai.page-size`), `KimaiProperties` bindet
+  `KIMAI_BASE_URL`/`KIMAI_API_TOKEN`, `KimaiException` für Fehler mit deutscher Meldung
+  (Validierungsfehler aus dem Kimai-Antwortkörper werden angehängt). Schreibend ist nur
+  `create` (`POST /timesheets`, Tags als kommagetrennter String, Zeiten ohne Zeitzone im
+  Format `yyyy-MM-dd'T'HH:mm:ss`).
+- `cli` – picocli-Kommandos `list`, `add`, `projects`, `activities`, `pdf`, `mcp` unter
+  `RootCommand`; `TimesheetQueryMixin` teilt die Optionen `--start/--end/--user/--all`;
+  `TextRenderer`/`JsonRenderer` erzeugen die Ausgabe. Exit-Codes: 0 ok, 1 Laufzeitfehler
+  (auch nicht auflösbare Projekt-/Tätigkeitsnamen), 2 Bedienfehler.
 - `mcp` – Spring-AI-MCP-Server über stdio. Tools sind `@McpTool`-Methoden in
-  `TimesheetTools` und `PdfTools`; `McpToolSupport.execute(...)` wandelt Ergebnisse/Exceptions
-  in `CallToolResult` (Fehler als `isError`, Meldung ohne Framework-Präfix).
+  `TimesheetTools`, `TimeTrackingTools` und `PdfTools`; `McpToolSupport.execute(...)` wandelt
+  Ergebnisse/Exceptions in `CallToolResult` (Fehler als `isError`, Meldung ohne
+  Framework-Präfix).
 - `pdf` – `TimesheetPdfWriter` rendert je Projekt ein PDF über Thymeleaf
   (`templates/zeitnachweis.html`, per `--template` ersetzbar) und OpenHTMLtoPDF.
 

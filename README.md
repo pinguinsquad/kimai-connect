@@ -4,8 +4,8 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
 Anbindung an die Zeiterfassung [Kimai](https://www.kimai.org/) als Spring-Boot-Anwendung
-(Java 25): Timesheets abrufen, PDF-Zeitnachweise erzeugen und dieselben Funktionen als
-[MCP](https://modelcontextprotocol.io/)-Server für KI-Clients bereitstellen. Das Jar ist
+(Java 25): Timesheets abrufen und erfassen, PDF-Zeitnachweise erzeugen und dieselben Funktionen
+als [MCP](https://modelcontextprotocol.io/)-Server für KI-Clients bereitstellen. Das Jar ist
 zugleich als Bibliothek nutzbar, etwa um aus Kimai-Zeiten Rechnungsentwürfe zu erzeugen.
 
 ## Funktionen
@@ -13,13 +13,19 @@ zugleich als Bibliothek nutzbar, etwa um aus Kimai-Zeiten Rechnungsentwürfe zu 
 | Oberfläche | Funktion |
 |---|---|
 | CLI `list` | Abrechenbare Timesheet-Einträge eines Zeitraums als Tabelle oder JSON |
+| CLI `add`  | Einen Timesheet-Eintrag erfassen (Projekt und Tätigkeit per Name oder ID) |
+| CLI `projects`, `activities` | Projekte und Tätigkeiten nachschlagen |
 | CLI `pdf`  | Pro Projekt ein PDF-Tätigkeitsnachweis (Kopfdaten, Summen je Tätigkeit, alle Einträge) |
 | CLI `mcp`  | MCP-Server über stdio |
 | MCP-Tool `kimai_list_timesheets` | Einträge eines Zeitraums, optional je User, optional inkl. nicht abrechenbarer |
 | MCP-Tool `kimai_list_users` | Alle Kimai-User mit ID und Name |
+| MCP-Tool `kimai_list_projects`, `kimai_list_activities` | Projekte und Tätigkeiten nachschlagen |
+| MCP-Tool `kimai_create_timesheet` | Einen Timesheet-Eintrag erfassen wie `add` |
 | MCP-Tool `kimai_generate_timesheet_pdfs` | PDF-Zeitnachweise wie `pdf` |
 
-Alle Funktionen sind **lesend** gegenüber Kimai; geschrieben wird nur lokal (PDFs).
+Gegenüber Kimai wird **nur beim Erfassen** (`add`, `kimai_create_timesheet`) geschrieben, und
+zwar ausschließlich neue Einträge – Bearbeiten und Löschen gibt es nicht. Alles andere ist
+lesend; lokal entstehen nur PDFs.
 
 ## Voraussetzungen
 
@@ -74,6 +80,30 @@ kimai list --start 2026-07-01 --end 2026-07-31 --user 3 --all --json
 Optionen: `--start`/`--end` (Pflicht, `yyyy-MM-dd`, beide Tage einschließlich),
 `--user <Kimai-User-ID>`, `--all` (auch nicht Abrechenbares), `--json`.
 Exit-Codes: 0 Erfolg, 1 Laufzeitfehler, 2 Bedienfehler.
+
+### Zeiten erfassen
+
+```bash
+kimai add --date 2026-08-28 --start 09:00 --end 12:30 --project "Projekt X" --activity Entwicklung \
+  --description "Beratung vor Ort" [--tag a --tag b] [--user 3] [--not-billable] [--json]
+kimai add --start 14:00 --duration 1h30m --project 12 --activity 5      # heute, Dauer statt Ende
+```
+
+Projekt und Tätigkeit werden per Name oder Kimai-ID angegeben. Ein Name muss eindeutig sein –
+erst zählt der exakte Name, sonst ein Namensbestandteil; bei mehreren Treffern bricht der Aufruf
+mit den Kandidaten ab, bei keinem mit den verfügbaren Einträgen. Tätigkeiten werden im Projekt
+gesucht, globale eingeschlossen. Die Dauer versteht `3h30m`, `2h`, `45m` und `1:30`. `--user`
+setzt einen anderen Kimai-User voraus, für den der API-User Einträge anlegen darf.
+
+Die Ausgabe zeigt den Eintrag so, wie Kimai ihn gespeichert hat – Rundungsregeln der
+Kimai-Konfiguration können Beginn, Ende und Dauer verändern.
+
+Zum Nachschlagen:
+
+```bash
+kimai projects [--customer "ACME"] [--json]        # ID, Kunde, Projekt
+kimai activities [--project "Projekt X"] [--json]  # ID, Tätigkeit, Projekt (oder global)
+```
 
 ### PDF-Zeitnachweise
 
@@ -148,13 +178,15 @@ Im Projekt:
 <dependency>
   <groupId>de.p10d</groupId>
   <artifactId>kimai-connect</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 
-Das Kern-Datenmodell liegt in `de.p10d.kimai.core` (`TimesheetService`, `TimesheetQuery`,
-`TimesheetReport`, `TimesheetEntry`); der Kimai-Client implementiert die dort definierten
-Schnittstellen `TimesheetSource` und `UserSource`.
+Das Kern-Datenmodell liegt in `de.p10d.kimai.core`: `TimesheetService` mit `TimesheetQuery`,
+`TimesheetReport`, `TimesheetEntry` zum Lesen; `TimeTrackingService` mit `TimesheetDraft`,
+`NewTimesheet`, `CreatedTimesheet`, `ProjectInfo`, `ActivityInfo` zum Erfassen. Der Kimai-Client
+implementiert die dort definierten Schnittstellen `TimesheetSource`, `UserSource`,
+`ProjectSource`, `ActivitySource` und `TimesheetWriter`.
 
 ## Mitmachen
 

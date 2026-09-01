@@ -10,7 +10,7 @@ import org.springframework.ai.mcp.annotation.McpToolParam;
 import org.springframework.stereotype.Component;
 
 /**
- * MCP-Tools für KI-Clients (Spec 002). Nur lesende Operationen. Die Tools
+ * Lesende MCP-Tools für KI-Clients (Spec 002); Erfassen in TimeTrackingTools. Die Tools
  * liefern CallToolResult direkt, damit Fehler ohne Framework-Präfix als
  * deutsche Meldung beim Client ankommen (Plan B-3); der Server läuft weiter.
  */

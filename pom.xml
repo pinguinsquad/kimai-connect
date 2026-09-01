@@ -13,7 +13,7 @@
 
     <groupId>de.p10d</groupId>
     <artifactId>kimai-connect</artifactId>
-    <version>0.1.3</version>
+    <version>0.2.0</version>
     <name>kimai-connect</name>
     <description>Kimai-Anbindung mit CLI, PDF-Zeitnachweisen und MCP-Server</description>
     <url>https://github.com/pinguinsquad/kimai-connect</url>

@@ -4,6 +4,25 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 
 ## [Unreleased]
 
+## [0.2.0] – 2026-09-01
+
+Zeiten erfassen (#20).
+
+### Hinzugefügt
+- CLI `add`: Timesheet-Eintrag anlegen mit Datum, Beginn, Ende oder Dauer (`3h30m`, `1:30`),
+  Projekt und Tätigkeit per Name oder ID, Beschreibung, Tags, User, `--not-billable`, `--json`
+- CLI `projects` und `activities` zum Nachschlagen von Namen und IDs
+- MCP-Tools `kimai_list_projects`, `kimai_list_activities`, `kimai_create_timesheet`
+- Kern: `TimeTrackingService` mit Namensauflösung (eindeutiger Treffer, sonst Fehler mit
+  Kandidaten), Ports `ProjectSource`, `ActivitySource`, `TimesheetWriter`, Records
+  `TimesheetDraft`, `NewTimesheet`, `CreatedTimesheet`, `ProjectInfo`, `ActivityInfo`,
+  `DurationParser`
+- `KimaiClient` hängt Validierungsfehler aus Kimai-Fehlerantworten an die Meldung an
+
+### Geändert
+- kimai-connect ist nicht mehr rein lesend: `POST /timesheets` beim Erfassen; Bearbeiten und
+  Löschen bleiben außen vor. Doku (README, SECURITY) entsprechend angepasst
+
 ## [0.1.3] – 2026-09-01
 
 ### Geändert
@@ -37,7 +56,8 @@ Erstes Release.
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
 
-[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.3...v0.2.0
 [0.1.3]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.0...v0.1.1
