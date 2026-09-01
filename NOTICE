@@ -2,3 +2,27 @@ kimai-connect
 Copyright 2026 p10d
 
 Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Drittanbieter-Komponenten
+-------------------------
+
+Das eigenständig lauffähige Jar (kimai-connect-<version>-exec.jar) bündelt
+Bibliotheken Dritter als eigenständige Jar-Dateien unter BOOT-INF/lib/. Die
+vollständige Liste mit Lizenzen liegt in jedem Jar unter
+META-INF/kimai-connect-THIRD-PARTY.txt (erzeugt beim Build). Neben
+Apache-2.0-, MIT- und BSD-lizenzierten Komponenten sind enthalten:
+
+- Open HTML to PDF (io.github.openhtmltopdf:openhtmltopdf-core,
+  openhtmltopdf-pdfbox) — GNU Lesser General Public License 2.1 or later,
+  https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html
+  Wird unverändert als Bibliothek genutzt und kann durch eine andere Version
+  ersetzt werden (BOOT-INF/lib/ bzw. Maven-Dependency).
+- Logback (ch.qos.logback:logback-classic, logback-core) — genutzt unter der
+  Eclipse Public License 2.0 (dual EPL-2.0 / LGPL-2.1),
+  https://www.eclipse.org/legal/epl-2.0/
+- Jakarta Annotations API (jakarta.annotation:jakarta.annotation-api) — genutzt
+  unter der Eclipse Public License 2.0 (dual EPL-2.0 / GPL-2.0 with Classpath
+  Exception), https://www.eclipse.org/legal/epl-2.0/
+
+Die Lizenzen dieser Komponenten gelten für die jeweilige Komponente; sie
+ändern nichts an der Apache-2.0-Lizenz von kimai-connect selbst.

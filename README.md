@@ -165,4 +165,6 @@ Siehe [CONTRIBUTING.md](CONTRIBUTING.md). Sicherheitsprobleme bitte gemäß
 
 ## Lizenz
 
-[Apache License 2.0](LICENSE)
+[Apache License 2.0](LICENSE). Drittanbieter-Komponenten und deren Lizenzen: [NOTICE](NOTICE)
+sowie `META-INF/kimai-connect-THIRD-PARTY.txt` in jedem gebauten Jar (der Build bricht bei
+GPL-/AGPL-lizenzierten Abhängigkeiten ab).
