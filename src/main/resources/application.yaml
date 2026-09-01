@@ -10,7 +10,7 @@ spring:
         stdio: false
         name: kimai-connect
         version: "@project.version@"
-        instructions: "Zugriff auf Kimai-Timesheets: Einträge für einen Zeitraum abrufen (kimai_list_timesheets), User auflisten (kimai_list_users), PDF-Zeitnachweise erzeugen (kimai_generate_timesheet_pdfs)."
+        instructions: "Zugriff auf Kimai-Timesheets: Einträge für einen Zeitraum abrufen (kimai_list_timesheets), User auflisten (kimai_list_users), PDF-Zeitnachweise erzeugen (kimai_generate_timesheet_pdfs). Zeiten erfassen: Projekte und Tätigkeiten nachschlagen (kimai_list_projects, kimai_list_activities), Eintrag anlegen (kimai_create_timesheet, Projekt und Tätigkeit per Name oder ID)."
 
 # stdout gehört der CLI-Ausgabe bzw. dem MCP-Protokoll — Logs nur bei Problemen
 logging:

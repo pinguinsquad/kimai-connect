@@ -1,5 +1,8 @@
 package de.p10d.kimai.cli;
 
+import de.p10d.kimai.core.ActivityInfo;
+import de.p10d.kimai.core.CreatedTimesheet;
+import de.p10d.kimai.core.ProjectInfo;
 import de.p10d.kimai.core.TimesheetEntry;
 import de.p10d.kimai.core.TimesheetQuery;
 import de.p10d.kimai.core.TimesheetReport;
@@ -71,6 +74,37 @@ class TextRendererTest {
             entry(LocalDateTime.of(2026, 7, 1, 9, 0), 3600, null)));
 
         assertThat(renderer.render(report)).contains("01.07.2026").contains("1:00");
+    }
+
+    @Test
+    void angelegterEintragAlsEinzeiligeTabelle() {
+        var begin = LocalDateTime.of(2026, 8, 28, 9, 0);
+        var created = new CreatedTimesheet(4711, begin, begin.plusMinutes(210), 12600, "Beratung\nvor Ort",
+            new ProjectInfo(1, "Projekt X", 7L, "ACME GmbH"), new ActivityInfo(5, "Entwicklung", null),
+            3L, List.of("a", "b"), false);
+
+        var output = renderer.render(created);
+        var lines = output.lines().toList();
+
+        assertThat(lines.getFirst()).contains("ID").contains("Datum").contains("Von").contains("Bis")
+            .contains("Dauer").contains("Projekt").contains("Tätigkeit").contains("Beschreibung").contains("Tags");
+        assertThat(lines.get(1)).contains("4711").contains("28.08.2026").contains("09:00").contains("12:30")
+            .contains("3:30").contains("Projekt X").contains("Entwicklung").contains("Beratung; vor Ort")
+            .contains("a, b");
+        assertThat(lines.getLast()).contains("Nicht abrechenbar");
+    }
+
+    @Test
+    void projektUndTaetigkeitslisten() {
+        var projects = renderer.renderProjects(List.of(
+            new ProjectInfo(1, "Website", 10L, "ACME GmbH"), new ProjectInfo(2, "Intern", null, null)));
+        assertThat(projects.lines().toList().getFirst()).contains("ID").contains("Kunde").contains("Projekt");
+        assertThat(projects).contains("ACME GmbH").contains("Website").contains("Intern");
+
+        var activities = renderer.renderActivities(List.of(
+            new ActivityInfo(5, "Entwicklung", null), new ActivityInfo(6, "Review", 1L)));
+        assertThat(activities.lines().toList().getFirst()).contains("ID").contains("Tätigkeit").contains("Projekt");
+        assertThat(activities).contains("Entwicklung").contains("(global)").contains("Review");
     }
 
     private static TimesheetEntry entry(LocalDateTime begin, long durationSeconds, String description) {

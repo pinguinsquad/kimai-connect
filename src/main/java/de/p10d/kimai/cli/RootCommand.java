@@ -11,12 +11,13 @@ import java.util.concurrent.Callable;
 @Component
 @Command(
     name = "kimai-connect",
-    description = "Kimai-Timesheets abrufen, Zeitnachweise erzeugen, MCP-Server für KI-Clients.",
+    description = "Kimai-Timesheets abrufen und erfassen, Zeitnachweise erzeugen, MCP-Server für KI-Clients.",
     synopsisHeading = "Aufruf: ",
     optionListHeading = "Optionen:%n",
     commandListHeading = "Befehle:%n",
     versionProvider = VersionProvider.class,
-    subcommands = {ListCommand.class, PdfCommand.class, McpCommand.class})
+    subcommands = {ListCommand.class, AddCommand.class, ProjectsCommand.class, ActivitiesCommand.class,
+        PdfCommand.class, McpCommand.class})
 public class RootCommand implements Callable<Integer> {
 
     @Option(names = {"-h", "--help"}, usageHelp = true,
