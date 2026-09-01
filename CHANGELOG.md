@@ -4,6 +4,14 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 
 ## [Unreleased]
 
+## [0.1.1] – 2026-09-01
+
+Repository öffentlich.
+
+### Geändert
+- Doku ohne Bezüge auf interne Instanzen und private Repositories; lokale Hinweise für
+  Claude Code in `CLAUDE.local.md` (gitignored)
+
 ## [0.1.0] – 2026-09-01
 
 Erstes Release.
@@ -18,5 +26,6 @@ Erstes Release.
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
 
-[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pinguinsquad/kimai-connect/releases/tag/v0.1.0

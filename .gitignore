@@ -6,5 +6,8 @@ target/
 *.iml
 .DS_Store
 
+# lokale Hinweise für Claude Code
+CLAUDE.local.md
+
 # generierte Artefakte
 /pdf/

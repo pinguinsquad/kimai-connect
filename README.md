@@ -6,9 +6,7 @@
 Anbindung an die Zeiterfassung [Kimai](https://www.kimai.org/) als Spring-Boot-Anwendung
 (Java 25): Timesheets abrufen, PDF-Zeitnachweise erzeugen und dieselben Funktionen als
 [MCP](https://modelcontextprotocol.io/)-Server für KI-Clients bereitstellen. Das Jar ist
-zugleich als Bibliothek nutzbar – so baut
-[kimai2lexware-v2](https://github.com/pinguinsquad/dies-und-das/tree/main/kimai2lexware-v2)
-darauf Rechnungsentwürfe für Lexware.
+zugleich als Bibliothek nutzbar, etwa um aus Kimai-Zeiten Rechnungsentwürfe zu erzeugen.
 
 ## Funktionen
 
@@ -150,7 +148,7 @@ Im Projekt:
 <dependency>
   <groupId>de.p10d</groupId>
   <artifactId>kimai-connect</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
 </dependency>
 ```
 
