@@ -8,6 +8,8 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 - CLI `list`, `pdf`, `mcp`; MCP-Tools `kimai_list_timesheets`, `kimai_list_users`, `kimai_generate_timesheet_pdfs`
 - Bibliotheks-Jar mit Kern-Datenmodell `de.p10d.kimai.core`
 - CI (`mvn verify`), Release-Pipeline nach GitHub Packages
+- Drittlizenz-Report `META-INF/kimai-connect-THIRD-PARTY.txt` im Jar (`license-maven-plugin`);
+  Build bricht bei GPL/AGPL-Abhängigkeiten ab; NOTICE nennt LGPL-/EPL-Komponenten
 
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
