@@ -30,8 +30,8 @@ eine Option und darf in Doku und Beispielen nicht als Voraussetzung erscheinen.
 KIMAI_BASE_URL=https://kimai.example.org/api KIMAI_API_TOKEN=<token> java -jar target/kimai-connect-<version>-exec.jar list --start 2026-08-01 --end 2026-08-31
 ```
 
-Test-Instanz in diesem Projekt: `https://tr.p10d.de/api`, Token in 1Password unter
-`op://Hosting/Kimai Projekt/API Token` (Aufruf dann mit `op run --no-masking -- java …`).
+Zugangsdaten zu einer Test-Instanz stehen nicht im Repo, sondern in `CLAUDE.local.md`
+(gitignored).
 
 ## Release-Modell
 
@@ -46,8 +46,8 @@ Nie direkt auf `main` committen. Ablauf in RELEASING.md.
 
 Spring-Boot-Anwendung ohne Web (`web-application-type: none`), die drei Oberflächen über
 einen gemeinsamen Kern bedient. Das Jar ist zugleich Bibliothek für
-[kimai2lexware-v2](https://github.com/pinguinsquad/dies-und-das/tree/main/kimai2lexware-v2);
-öffentliche Klassen in `core`, `client`, `pdf`, `mcp` (z. B. `McpToolSupport`) sind daher API.
+andere Projekte (etwa eine Rechnungserstellung aus Kimai-Zeiten); öffentliche Klassen in `core`,
+`client`, `pdf`, `mcp` (z. B. `McpToolSupport`) sind daher API.
 
 Pakete unter `de.p10d.kimai`:
 
