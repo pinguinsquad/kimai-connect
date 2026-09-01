@@ -4,6 +4,12 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 
 ## [Unreleased]
 
+## [0.1.3] – 2026-09-01
+
+### Geändert
+- `openhtmltopdf-pdfbox` 1.1.79 → 1.1.83 (Seitenumbruch-Korrekturen bei Tabellen und Blöcken)
+- `license-maven-plugin` 2.5.0 → 2.7.1
+
 ## [0.1.2] – 2026-09-01
 
 ### Geändert
@@ -31,7 +37,8 @@ Erstes Release.
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
 
-[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pinguinsquad/kimai-connect/releases/tag/v0.1.0
