@@ -13,11 +13,20 @@
 
     <groupId>de.p10d</groupId>
     <artifactId>kimai-connect</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <name>kimai-connect</name>
     <description>Kimai-Anbindung mit CLI, PDF-Zeitnachweisen und MCP-Server</description>
     <url>https://github.com/pinguinsquad/kimai-connect</url>
     <inceptionYear>2026</inceptionYear>
+
+    <!-- Ziel von `mvn deploy` in release.yml (server-id github, Zugangsdaten setzt setup-java) -->
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/pinguinsquad/kimai-connect</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>
@@ -52,7 +61,7 @@
         <spring-ai.version>2.0.1</spring-ai.version>
         <openhtmltopdf.version>1.1.79</openhtmltopdf.version>
         <!-- Reproducible Builds: bei jedem Release aktualisieren -->
-        <project.build.outputTimestamp>2026-08-27T00:00:00Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-09-01T00:00:00Z</project.build.outputTimestamp>
     </properties>
 
     <dependencyManagement>
@@ -171,6 +180,36 @@
                                 <licenseMerge>BSD-3-Clause|The BSD License|BSD licence</licenseMerge>
                             </licenseMerges>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Sources- und Javadoc-Jar für die Veröffentlichung in GitHub Packages -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <!-- fehlende Kommentare sind kein Fehler, echte Javadoc-Fehler schon -->
+                    <doclint>all,-missing</doclint>
+                    <quiet>true</quiet>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
