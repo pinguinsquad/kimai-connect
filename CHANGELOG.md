@@ -4,6 +4,11 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionier
 
 ## [Unreleased]
 
+## [0.1.2] – 2026-09-01
+
+### Geändert
+- CI: `dependabot/fetch-metadata` 2 → 3
+
 ## [0.1.1] – 2026-09-01
 
 Repository öffentlich.
@@ -26,6 +31,7 @@ Erstes Release.
 ### Geändert
 - `KIMAI_BASE_URL` ist Pflicht, kein eingebauter Default
 
-[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/pinguinsquad/kimai-connect/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/pinguinsquad/kimai-connect/releases/tag/v0.1.0
