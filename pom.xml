@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
         <relativePath/>
     </parent>
 
@@ -58,8 +58,8 @@
     <properties>
         <java.version>25</java.version>
         <picocli.version>4.7.7</picocli.version>
-        <spring-ai.version>2.0.1</spring-ai.version>
-        <openhtmltopdf.version>1.1.87</openhtmltopdf.version>
+        <spring-ai.version>2.0.2</spring-ai.version>
+        <openhtmltopdf.version>1.1.104</openhtmltopdf.version>
         <!-- Reproducible Builds: bei jedem Release aktualisieren -->
         <project.build.outputTimestamp>2026-09-01T00:00:00Z</project.build.outputTimestamp>
     </properties>
@@ -124,7 +124,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
+                <version>3.7.0</version>
                 <executions>
                     <execution>
                         <id>enforce-environment</id>
